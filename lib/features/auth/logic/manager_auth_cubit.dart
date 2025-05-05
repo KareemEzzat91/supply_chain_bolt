@@ -1,8 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'manager_signup_state.dart';
+import 'package:supply_chain_bolt/features/auth/data/repo/auth_repo.dart';
+import 'manager_auth_state.dart';
 
-class ManagerSignupCubit extends Cubit<ManagerSignupState> {
-  ManagerSignupCubit() : super(ManagerSignupInitial());
+class ManagerAuthCubit extends Cubit<ManagerAuthState> {
+  final AuthRepo authRepo;
+
+  ManagerAuthCubit(this.authRepo) : super(ManagerSignupInitial());
 
   Future<void> signup(String name, String email, String password) async {
     emit(ManagerSignupLoading());
