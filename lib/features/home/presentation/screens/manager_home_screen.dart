@@ -213,7 +213,9 @@ class ManagerHomeScreen extends StatelessWidget {
         ).animate().fadeIn(duration: 600.ms, delay: 300.ms)
             .slideY(begin: 0.2, end: 0, curve: Curves.easeOutQuad),
         _buildStatCard(
-          'Product Management',
+          // TODO: Add functionality for managing orders or navigate to order details
+
+          'Orders Management',
           'Manage',
           Icons.inventory,
           AppTheme.secondaryBlue,

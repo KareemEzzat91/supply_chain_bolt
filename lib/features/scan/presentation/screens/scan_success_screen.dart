@@ -27,7 +27,7 @@ class ScanSuccessScreen extends StatelessWidget {
               ),
               SizedBox(height: 24.h),
               Text(
-                'Order Scanned Successfully',
+                'Product Scanned Successfully',
                 style: TextStyle(
                   fontSize: 24.sp,
                   fontWeight: FontWeight.bold,
@@ -35,7 +35,7 @@ class ScanSuccessScreen extends StatelessWidget {
               ),
               SizedBox(height: 16.h),
               Text(
-                'Order ID: $orderId',
+                'Product ID: $orderId',
                 style: TextStyle(
                   fontSize: 18.sp,
                   color: Colors.grey[600],

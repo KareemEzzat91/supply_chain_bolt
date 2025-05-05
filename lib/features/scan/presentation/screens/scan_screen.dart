@@ -17,7 +17,7 @@ class ScanScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Scan Order QR Code',
+                'Scan Product QR Code',
                 style: TextStyle(
                   fontSize: 24.sp,
                   fontWeight: FontWeight.bold,

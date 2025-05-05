@@ -232,8 +232,8 @@ class _DistributorHomeScreenState extends State<DistributorHomeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildProgressStat('Completed', '8', Colors.green),
-              _buildProgressStat('In Progress', '3', Colors.blue),
+              _buildProgressStat('Delivered ', '8', Colors.green),
+              _buildProgressStat('Shipped', '3', Colors.blue),
               _buildProgressStat('Pending', '2', Colors.orange),
             ],
           ),
@@ -324,7 +324,7 @@ class _DistributorHomeScreenState extends State<DistributorHomeScreen> {
           'Order #2458',
           'Central Market Area',
           '2 hours left',
-          'In Progress',
+          'Shipped',
           Icons.delivery_dining,
         ),
         SizedBox(height: 12.h),
@@ -337,7 +337,7 @@ class _DistributorHomeScreenState extends State<DistributorHomeScreen> {
         ),
         SizedBox(height: 12.h),
         _buildTaskItem(
-          'Order #2460',
+          'Order #2460',// login as manger
           'South Mall',
           '4 hours left',
           'Pending',
@@ -356,7 +356,7 @@ class _DistributorHomeScreenState extends State<DistributorHomeScreen> {
   ) {
     final statusColor = status == 'Pending'
         ? Colors.orange
-        : status == 'In Progress'
+        : status == 'Shipped'
             ? Colors.blue
             : Colors.green;
 
