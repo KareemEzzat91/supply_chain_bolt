@@ -1,12 +1,12 @@
 abstract class ManagerAuthState {}
 
-class ManagerSignupInitial extends ManagerAuthState {}
+class ManagerAuthInitial extends ManagerAuthState {}
 
-class ManagerSignupLoading extends ManagerAuthState {}
+class ManagerAuthLoading extends ManagerAuthState {}
 
-class ManagerSignupSuccess extends ManagerAuthState {}
+class ManagerAuthSuccess extends ManagerAuthState {}
 
-class ManagerSignupError extends ManagerAuthState {
+class ManagerAuthError extends ManagerAuthState {
   final String message;
-  ManagerSignupError(this.message);
+  ManagerAuthError(this.message);
 }

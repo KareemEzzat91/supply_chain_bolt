@@ -1,4 +1,3 @@
-import 'package:supply_chain_bolt/core/api_helper/api_helper.dart';
 import 'package:supply_chain_bolt/core/networking/api_result.dart';
 import 'package:supply_chain_bolt/features/auth/data/models/response_model.dart';
 
@@ -13,12 +12,11 @@ class AuthRepo {
   Future<ApiResult<LoginResponseModel>> loginAsManager(String email, String password) async {
     try {
       final response = await apiService.signIn(email,password );
-        if (response.statusCode==200) {
+        if (response.statusCode==200 ||response.statusCode==201) {
          return  ApiResult.success(LoginResponseModel.fromJson(response.data));
         } else {
           return ApiResult.error(response.data);
         }
-
     } catch (e) {
       return ApiResult.error(e);
     }
@@ -26,7 +24,7 @@ class AuthRepo {
   Future<ApiResult<LoginResponseModel>> loginAsDistributor(String email, String password) async {
     try {
       final response = await apiService.signIn(email,password );
-      if (response.statusCode==200) {
+      if (response.statusCode==200||response.statusCode==201) {
         return  ApiResult.success(LoginResponseModel.fromJson(response.data));
       } else {
         return ApiResult.error(response.data);
@@ -37,30 +35,36 @@ class AuthRepo {
     }
   }
 
-  Future<ApiResult<RegisterResponseModel>> registerAsDistributor(String email, String password,String role ) async {
+  Future<ApiResult<LoginResponseModel>> registerAsDistributor(String name ,String email, String password,String role ) async {
     try {
-      final response = await apiService.signUp(email,password,role  );
-      if (response.statusCode==200) {
-        return  ApiResult.success(RegisterResponseModel.fromJson(response.data));
+      final response = await apiService.signUp(name,email,password,role);
+      if (response.statusCode==200||response.statusCode==201) {
+
+        return  ApiResult.success(LoginResponseModel.fromJson(response.data));
+
       } else {
+
         return ApiResult.error(response.data);
       }
 
     } catch (e) {
+
+
       return ApiResult.error(e);
     }
   }
-  Future<ApiResult<RegisterResponseModel>> registerAsManger(String email, String password,String role) async {
+  Future<ApiResult<LoginResponseModel>> registerAsManger(String name ,String email, String password,String role) async {
     try {
-    final response = await apiService.signUp(email,password,role  );
-    if (response.statusCode==200) {
-      return  ApiResult.success(RegisterResponseModel.fromJson(response.data));
+    final response = await apiService.signUp(name ,email,password,role);
+    if (response.statusCode==200||response.statusCode==201) {
+      return  ApiResult.success(LoginResponseModel.fromJson(response.data));
     } else {
       return ApiResult.error(response.data);
     }
 
   } catch (e) {
-    return ApiResult.error(e);
+
+      return ApiResult.error(e);
   }
   }
 

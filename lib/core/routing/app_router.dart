@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supply_chain_bolt/features/main/presentation/pages/settings_page.dart';
 import '../../features/main/presentation/pages/main_screen.dart';
 import 'routes.dart';
-import '../di/dependency_injection.dart';
 
 // Auth Screens
 import '../../features/auth/presentation/screens/manager_login_screen.dart';
@@ -50,19 +48,19 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const StartScreen());
 
       case Routes.managerLoginScreen:
-        return MaterialPageRoute(builder: (_) => const ManagerLoginScreen());
+        return MaterialPageRoute(builder: (_) =>  ManagerLoginScreen());
 
       case Routes.managerSignupScreen:
-        return MaterialPageRoute(builder: (_) => const ManagerSignupScreen());
+        return MaterialPageRoute(builder: (_) =>  ManagerSignupScreen());
 
       case Routes.distributorLoginScreen:
         return MaterialPageRoute(
-          builder: (_) => const DistributorLoginScreen(),
+          builder: (_) =>  DistributorLoginScreen(),
         );
 
       case Routes.distributorSignupScreen:
         return MaterialPageRoute(
-          builder: (_) => const DistributorSignupScreen(),
+          builder: (_) =>  DistributorSignupScreen(),
         );
 
       case Routes.orderListPage:
