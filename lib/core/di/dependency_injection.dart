@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supply_chain_bolt/core/api_helper/api_helper.dart';
 import 'package:supply_chain_bolt/core/api_helper/dio_helper.dart';
 import 'package:supply_chain_bolt/features/auth/logic/distributor_auth_cubit.dart';
+import 'package:supply_chain_bolt/features/products/data/product_api_servicer/product_api_servicer.dart';
+import 'package:supply_chain_bolt/features/products/data/product_repo/product_repo.dart';
 
 import '../../features/auth/data/data_source/auth_api_service.dart';
 import '../../features/auth/data/repo/auth_repo.dart';
@@ -22,20 +24,26 @@ Future<void> setupGetIt() async {
   locator.registerLazySingleton<ApiHelper>(() => DioHelper());
 
   // Data Sources
-  locator.registerLazySingleton<AuthApiService>(() => AuthApiService(locator<ApiHelper>()),);
-  locator.registerLazySingleton<AuthRepo>(() => AuthRepo(locator<AuthApiService>()),);
-  locator.registerLazySingleton<DistributorAuthCubit>(() => DistributorAuthCubit(locator<AuthRepo>()),);
-  locator.registerLazySingleton<ManagerAuthCubit>(() => ManagerAuthCubit(locator<AuthRepo>()),);
+  locator.registerLazySingleton<AuthApiService>(
+    () => AuthApiService(locator<ApiHelper>()),
+  );
+  locator.registerLazySingleton<AuthRepo>(
+    () => AuthRepo(locator<AuthApiService>()),
+  );
+  locator.registerLazySingleton<DistributorAuthCubit>(
+    () => DistributorAuthCubit(locator<AuthRepo>()),
+  );
+  locator.registerLazySingleton<ManagerAuthCubit>(
+    () => ManagerAuthCubit(locator<AuthRepo>()),
+  );
 
-
-
-
-
-
-
-
-
-
+  // products data sources
+  locator.registerLazySingleton<ProductApiServicer>(
+    () => ProductApiServicer(apiHelper: locator<ApiHelper>()),
+  );
+  locator.registerLazySingleton<ProductRepository>(
+    () => ProductRepository(productApiServicer: locator<ProductApiServicer>()),
+  );
 
   locator.registerLazySingleton<OrderRemoteDataSource>(
     () => OrderRemoteDataSourceImpl(

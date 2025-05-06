@@ -1,92 +1,81 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'product_model.g.dart';
 
+/// Product model with full null safety and robust (de)serialization.
 @JsonSerializable()
-class ProductModel {
-  final String id;
+class Product extends Equatable {
+  final int? id;
   final String name;
-  final String category;
+  final String barcode;
   final double price;
-  final int quantity;
-  final String productCode;
-  final String? imageUrl;
+  final int stockQuantity;
+  final String category;
   final String? description;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final List<ProductHistory> history;
 
-  ProductModel({
-    required this.id,
+  /// All fields except 'id' and 'description' are required and non-nullable.
+  const Product({
+    this.id,
     required this.name,
-    required this.category,
+    required this.barcode,
     required this.price,
-    required this.quantity,
-    required this.productCode,
-    this.imageUrl,
+    required this.stockQuantity,
+    required this.category,
     this.description,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.history,
   });
 
-  factory ProductModel.fromJson(Map<String, dynamic> json) =>
-      _$ProductModelFromJson(json);
+  /// Creates a Product from a JSON map, handling nulls gracefully
+  factory Product.fromJson(Map<String, dynamic> json) => Product(
+        id: (json['id'] as num?)?.toInt(),
+        name: (json['name'] as String?) ?? '',
+        barcode: (json['barcode'] as String?) ?? '',
+        price: (json['price'] as num?)?.toDouble() ?? 0.0,
+        stockQuantity: (json['stockQuantity'] as num?)?.toInt() ?? 0,
+        category: (json['category'] as String?) ?? '',
+        description: json['description'] as String?,
+      );
 
-  Map<String, dynamic> toJson() => _$ProductModelToJson(this);
+  /// Converts the Product to a JSON map, omitting nulls and using defaults
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'barcode': barcode,
+        'price': price,
+        'stockQuantity': stockQuantity,
+        'category': category,
+        if (description != null) 'description': description,
+      };
 
-  ProductModel copyWith({
+  /// Creates a copy of the Product with the given fields replaced with new values
+  Product copyWith({
+    int? id,
     String? name,
-    String? category,
+    String? barcode,
     double? price,
-    int? quantity,
-    String? productCode,
-    String? imageUrl,
+    int? stockQuantity,
+    String? category,
     String? description,
   }) {
-    return ProductModel(
-      id: id,
+    return Product(
+      id: id ?? this.id,
       name: name ?? this.name,
-      category: category ?? this.category,
+      barcode: barcode ?? this.barcode,
       price: price ?? this.price,
-      quantity: quantity ?? this.quantity,
-      productCode: productCode ?? this.productCode,
-      imageUrl: imageUrl ?? this.imageUrl,
+      stockQuantity: stockQuantity ?? this.stockQuantity,
+      category: category ?? this.category,
       description: description ?? this.description,
-      createdAt: createdAt,
-      updatedAt: DateTime.now(),
-      history: [
-        ...history,
-        ProductHistory(
-          action: 'Updated',
-          timestamp: DateTime.now(),
-          details: 'Product details updated',
-        ),
-      ],
     );
   }
 
-  String get stockStatus {
-    if (quantity <= 0) return 'Out of Stock';
-    if (quantity <= 10) return 'Low Stock';
-    return 'In Stock';
-  }
-}
-
-@JsonSerializable()
-class ProductHistory {
-  final String action;
-  final DateTime timestamp;
-  final String details;
-
-  ProductHistory({
-    required this.action,
-    required this.timestamp,
-    required this.details,
-  });
-
-  factory ProductHistory.fromJson(Map<String, dynamic> json) =>
-      _$ProductHistoryFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ProductHistoryToJson(this);
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+        barcode,
+        price,
+        stockQuantity,
+        category,
+        description,
+      ];
 }

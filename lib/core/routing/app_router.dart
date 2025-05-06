@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supply_chain_bolt/features/main/presentation/pages/settings_page.dart';
 import '../../features/main/presentation/pages/main_screen.dart';
 import 'routes.dart';
-import '../di/dependency_injection.dart';
 
 // Auth Screens
 import '../../features/auth/presentation/screens/manager_login_screen.dart';
@@ -78,8 +76,9 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const ProfileScreen());
 
       case Routes.notificationsScreen:
-        return MaterialPageRoute(builder: (_) => const NotificationsScreen());case Routes.settings:
-      return MaterialPageRoute(builder: (_) => const SettingsDashboard());
+        return MaterialPageRoute(builder: (_) => const NotificationsScreen());
+      case Routes.settings:
+        return MaterialPageRoute(builder: (_) => const SettingsDashboard());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

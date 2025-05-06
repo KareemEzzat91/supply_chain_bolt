@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supply_chain_bolt/core/di/dependency_injection.dart';
 import 'package:supply_chain_bolt/core/utils/constants.dart';
-import 'package:supply_chain_bolt/features/products/presentation/cubit/product_cubit.dart';
+import 'package:supply_chain_bolt/features/products/cubit/product_cubit.dart';
+import 'package:supply_chain_bolt/features/products/data/product_repo/product_repo.dart';
 
 class NewOrderScreen extends StatelessWidget {
   const NewOrderScreen({super.key});
@@ -9,7 +11,9 @@ class NewOrderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ProductCubit() ,
+      create: (context) => ProductCubit(
+        productRepository:locator.get<ProductRepository>(),
+      ) ,
       child: Scaffold(
         appBar: AppBar(
           title: const Text(
