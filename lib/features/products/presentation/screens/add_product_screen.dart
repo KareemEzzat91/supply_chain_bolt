@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supply_chain_bolt/core/utils/constants.dart';
-import 'package:supply_chain_bolt/features/products/presentation/cubit/product_cubit.dart';
+import 'package:supply_chain_bolt/features/products/cubit/product_cubit.dart';
+import 'package:supply_chain_bolt/features/products/cubit/product_state.dart';
+import 'package:supply_chain_bolt/features/products/data/models/product_model.dart';
 
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key});
@@ -33,57 +35,45 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ProductCubit(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Add New Product',
-            style: TextStyle(
-              fontSize: AppTheme.headingFontSize,
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
+        title: Text(
+          'Add New Product',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: AppTheme.boldWeight,
-            ),
-          ),
+              color: Theme.of(context).appBarTheme.foregroundColor),
         ),
-        body: BlocListener<ProductCubit, ProductState>(
-          listener: (context, state) {
-            if (state is ProductError) {
-              setState(() => _isLoading = false);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: AppTheme.errorColor,
-                ),
-              );
-            } else if (state is ProductLoaded) {
-              setState(() => _isLoading = false);
-              Navigator.pop(context);
-            }
-          },
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(AppTheme.defaultPadding),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Product Information',
-                    style: TextStyle(
-                      fontSize: AppTheme.subheadingFontSize,
-                      fontWeight: AppTheme.boldWeight,
-                    ),
-                  ),
-                  SizedBox(height: AppTheme.defaultPadding),
-                  _buildProductImage(),
-                  SizedBox(height: AppTheme.defaultPadding),
-                  _buildProductForm(),
-                  SizedBox(height: AppTheme.defaultPadding * 2),
-                  _buildProductPreview(),
-                  SizedBox(height: AppTheme.defaultPadding * 2),
-                  _buildSubmitButton(),
-                ],
+      ),
+      body: BlocListener<ProductCubit, ProductState>(
+        listener: (context, state) {
+          if (state is ProductError) {
+            setState(() => _isLoading = false);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: AppTheme.errorColor,
               ),
+            );
+          } else if (state is ProductLoaded) {
+            setState(() => _isLoading = false);
+            Navigator.pop(context, true);
+          }
+        },
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppTheme.defaultPadding),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildProductImage(),
+                const SizedBox(height: AppTheme.defaultPadding * 2),
+                _buildProductForm(),
+                const SizedBox(height: AppTheme.defaultPadding * 2),
+                _buildSubmitButton(),
+              ],
             ),
           ),
         ),
@@ -92,51 +82,79 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   Widget _buildProductImage() {
-    return Center(
+    return Container(
+      padding: const EdgeInsets.all(AppTheme.defaultPadding),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(AppTheme.defaultBorderRadius),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Column(
         children: [
           Container(
             width: 150,
             height: 150,
             decoration: BoxDecoration(
-              color: AppTheme.secondaryBackgroundColor,
+              color: Colors.grey.shade50,
               borderRadius: BorderRadius.circular(AppTheme.defaultBorderRadius),
-              border: Border.all(color: AppTheme.borderColor),
+              border: Border.all(color: Colors.grey.shade200),
             ),
             child: _imageUrl != null
                 ? ClipRRect(
-              borderRadius:
-              BorderRadius.circular(AppTheme.defaultBorderRadius),
-              child: Image.network(
-                _imageUrl!,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) =>
-                    Icon(
-                      Icons.error_outline,
-                      size: 50,
-                      color: AppTheme.errorColor,
+                    borderRadius:
+                        BorderRadius.circular(AppTheme.defaultBorderRadius),
+                    child: Image.network(
+                      _imageUrl!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => const Icon(
+                        Icons.error_outline,
+                        size: 50,
+                        color: AppTheme.errorColor,
+                      ),
                     ),
-              ),
-            )
+                  )
                 : Icon(
-              Icons.add_photo_alternate,
-              size: 50,
-              color: AppTheme.secondaryTextColor,
-            ),
+                    Icons.add_photo_alternate,
+                    size: 50,
+                    color: Colors.grey.shade400,
+                  ),
           ),
-          SizedBox(height: AppTheme.defaultPadding),
-          Wrap(
-            spacing: AppTheme.defaultPadding,
+          const SizedBox(height: AppTheme.defaultPadding),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton.icon(
                 onPressed: _isLoading ? null : _pickImage,
                 icon: const Icon(Icons.camera_alt),
                 label: const Text('Take Photo'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.defaultPadding,
+                    vertical: 12,
+                  ),
+                ),
               ),
+              const SizedBox(width: AppTheme.defaultPadding),
               ElevatedButton.icon(
                 onPressed: _isLoading ? null : _pickImageFromGallery,
                 icon: const Icon(Icons.photo_library),
                 label: const Text('Choose from Gallery'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey.shade100,
+                  foregroundColor: Colors.black87,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.defaultPadding,
+                    vertical: 12,
+                  ),
+                ),
               ),
             ],
           ),
@@ -146,197 +164,238 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   Widget _buildProductForm() {
-    return Column(
-      children: [
-        TextFormField(
-          controller: _nameController,
-          decoration: const InputDecoration(
-            labelText: 'Product Name',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.shopping_bag),
-          ),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter a product name';
-            }
-            return null;
-          },
-        ),
-        SizedBox(height: AppTheme.defaultPadding),
-        DropdownButtonFormField<String>(
-          decoration: const InputDecoration(
-            labelText: 'Category',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.category),
-          ),
-          value: _selectedCategory,
-          items: ['Electronics', 'Beverages', 'Food', 'Clothing']
-              .map((category) =>
-              DropdownMenuItem(
-                value: category,
-                child: Text(category),
-              ))
-              .toList(),
-          onChanged: _isLoading
-              ? null
-              : (value) {
-            setState(() {
-              _selectedCategory = value!;
-            });
-          },
-        ),
-        SizedBox(height: AppTheme.defaultPadding),
-        Row(
-          children: [
-            Expanded(
-              child: TextFormField(
-                controller: _priceController,
-                decoration: const InputDecoration(
-                  labelText: 'Price',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.attach_money),
-                ),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a price';
-                  }
-                  if (double.tryParse(value) == null) {
-                    return 'Please enter a valid price';
-                  }
-                  return null;
-                },
-              ),
-            ),
-            SizedBox(width: AppTheme.defaultPadding),
-            Expanded(
-              child: TextFormField(
-                controller: _quantityController,
-                decoration: const InputDecoration(
-                  labelText: 'Quantity',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.inventory),
-                ),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a quantity';
-                  }
-                  if (int.tryParse(value) == null) {
-                    return 'Please enter a valid quantity';
-                  }
-                  return null;
-                },
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: AppTheme.defaultPadding),
-        TextFormField(
-          controller: _codeController,
-          decoration: const InputDecoration(
-            labelText: 'Product Code',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.qr_code),
-          ),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter a product code';
-            }
-            return null;
-          },
-        ),
-        SizedBox(height: AppTheme.defaultPadding),
-        TextFormField(
-          controller: _descriptionController,
-          decoration: const InputDecoration(
-            labelText: 'Description',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.description),
-          ),
-          maxLines: 3,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildProductPreview() {
     return Container(
-      padding: EdgeInsets.all(AppTheme.defaultPadding),
+      padding: const EdgeInsets.all(AppTheme.defaultPadding),
       decoration: BoxDecoration(
-        color: AppTheme.secondaryBackgroundColor,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(AppTheme.defaultBorderRadius),
-        border: Border.all(color: AppTheme.borderColor),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Product Preview',
-            style: TextStyle(
-              fontSize: AppTheme.subheadingFontSize,
-              fontWeight: AppTheme.boldWeight,
-              color: AppTheme.textColor,
-            ),
+            'Product Information',
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(fontWeight: AppTheme.boldWeight),
           ),
-          SizedBox(height: AppTheme.defaultPadding),
-          if (_imageUrl != null)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(AppTheme.defaultBorderRadius),
-              child: Image.network(
-                _imageUrl!,
-                height: 100,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) =>
-                    Container(
-                      height: 100,
-                      color: AppTheme.errorColor.withOpacity(0.1),
-                      child: Icon(
-                        Icons.error_outline,
-                        size: 40,
-                        color: AppTheme.errorColor,
-                      ),
+          const SizedBox(height: AppTheme.defaultPadding),
+          TextFormField(
+            controller: _nameController,
+            decoration: InputDecoration(
+              labelText: 'Product Name',
+              border: OutlineInputBorder(
+                borderRadius:
+                    BorderRadius.circular(AppTheme.defaultBorderRadius),
+                borderSide: BorderSide(color: Theme.of(context).dividerColor),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius:
+                    BorderRadius.circular(AppTheme.defaultBorderRadius),
+                borderSide: BorderSide(color: Theme.of(context).dividerColor),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius:
+                    BorderRadius.circular(AppTheme.defaultBorderRadius),
+                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+              ),
+              prefixIcon: const Icon(Icons.shopping_bag),
+              filled: true,
+              fillColor: Theme.of(context).colorScheme.surface,
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter a product name';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: AppTheme.defaultPadding),
+          DropdownButtonFormField<String>(
+            decoration: InputDecoration(
+              labelText: 'Category',
+              border: OutlineInputBorder(
+                borderRadius:
+                    BorderRadius.circular(AppTheme.defaultBorderRadius),
+                borderSide: BorderSide(color: Theme.of(context).dividerColor),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius:
+                    BorderRadius.circular(AppTheme.defaultBorderRadius),
+                borderSide: BorderSide(color: Theme.of(context).dividerColor),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius:
+                    BorderRadius.circular(AppTheme.defaultBorderRadius),
+                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+              ),
+              prefixIcon: const Icon(Icons.category),
+              filled: true,
+              fillColor: Theme.of(context).colorScheme.surface,
+            ),
+            value: _selectedCategory,
+            items: ['Electronics', 'Beverages', 'Food', 'Clothing']
+                .map((category) => DropdownMenuItem(
+                      value: category,
+                      child: Text(category),
+                    ))
+                .toList(),
+            onChanged: _isLoading
+                ? null
+                : (value) {
+                    setState(() {
+                      _selectedCategory = value!;
+                    });
+                  },
+          ),
+          const SizedBox(height: AppTheme.defaultPadding),
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  controller: _priceController,
+                  decoration: InputDecoration(
+                    labelText: 'Price',
+                    border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(AppTheme.defaultBorderRadius),
+                      borderSide:
+                          BorderSide(color: Theme.of(context).dividerColor),
                     ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(AppTheme.defaultBorderRadius),
+                      borderSide:
+                          BorderSide(color: Theme.of(context).dividerColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(AppTheme.defaultBorderRadius),
+                      borderSide:
+                          BorderSide(color: Theme.of(context).primaryColor),
+                    ),
+                    prefixIcon: const Icon(Icons.attach_money),
+                    filled: true,
+                    fillColor: Theme.of(context).colorScheme.surface,
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a price';
+                    }
+                    if (double.tryParse(value) == null) {
+                      return 'Please enter a valid price';
+                    }
+                    return null;
+                  },
+                ),
               ),
-            ),
-          SizedBox(height: AppTheme.defaultPadding),
-          _buildPreviewItem('Name', _nameController.text),
-          _buildPreviewItem('Category', _selectedCategory),
-          _buildPreviewItem('Price', '\$${_priceController.text}'),
-          _buildPreviewItem('Quantity', _quantityController.text),
-          _buildPreviewItem('Product Code', _codeController.text),
-          if (_descriptionController.text.isNotEmpty)
-            _buildPreviewItem('Description', _descriptionController.text),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPreviewItem(String label, String value) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: AppTheme.defaultPadding / 2),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              label,
-              style: TextStyle(
-                color: AppTheme.secondaryTextColor,
-                fontWeight: AppTheme.mediumWeight,
+              const SizedBox(width: AppTheme.defaultPadding),
+              Expanded(
+                child: TextFormField(
+                  controller: _quantityController,
+                  decoration: InputDecoration(
+                    labelText: 'Quantity',
+                    border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(AppTheme.defaultBorderRadius),
+                      borderSide:
+                          BorderSide(color: Theme.of(context).dividerColor),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(AppTheme.defaultBorderRadius),
+                      borderSide:
+                          BorderSide(color: Theme.of(context).dividerColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(AppTheme.defaultBorderRadius),
+                      borderSide:
+                          BorderSide(color: Theme.of(context).primaryColor),
+                    ),
+                    prefixIcon: const Icon(Icons.inventory),
+                    filled: true,
+                    fillColor: Theme.of(context).colorScheme.surface,
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a quantity';
+                    }
+                    if (int.tryParse(value) == null) {
+                      return 'Please enter a valid quantity';
+                    }
+                    return null;
+                  },
+                ),
               ),
-            ),
+            ],
           ),
-          Expanded(
-            child: Text(
-              value.isEmpty ? 'Not set' : value,
-              style: TextStyle(
-                color: AppTheme.textColor,
-                fontWeight: AppTheme.regularWeight,
+          const SizedBox(height: AppTheme.defaultPadding),
+          TextFormField(
+            controller: _codeController,
+            decoration: InputDecoration(
+              labelText: 'Product Code',
+              border: OutlineInputBorder(
+                borderRadius:
+                    BorderRadius.circular(AppTheme.defaultBorderRadius),
+                borderSide: BorderSide(color: Theme.of(context).dividerColor),
               ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius:
+                    BorderRadius.circular(AppTheme.defaultBorderRadius),
+                borderSide: BorderSide(color: Theme.of(context).dividerColor),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius:
+                    BorderRadius.circular(AppTheme.defaultBorderRadius),
+                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+              ),
+              prefixIcon: const Icon(Icons.qr_code),
+              filled: true,
+              fillColor: Theme.of(context).colorScheme.surface,
             ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter a product code';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: AppTheme.defaultPadding),
+          TextFormField(
+            controller: _descriptionController,
+            decoration: InputDecoration(
+              labelText: 'Description',
+              border: OutlineInputBorder(
+                borderRadius:
+                    BorderRadius.circular(AppTheme.defaultBorderRadius),
+                borderSide: BorderSide(color: Theme.of(context).dividerColor),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius:
+                    BorderRadius.circular(AppTheme.defaultBorderRadius),
+                borderSide: BorderSide(color: Theme.of(context).dividerColor),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius:
+                    BorderRadius.circular(AppTheme.defaultBorderRadius),
+                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+              ),
+              prefixIcon: const Icon(Icons.description),
+              filled: true,
+              fillColor: Theme.of(context).colorScheme.surface,
+            ),
+            maxLines: 3,
           ),
         ],
       ),
@@ -344,51 +403,58 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   Widget _buildSubmitButton() {
-    return ElevatedButton(
-      onPressed: _isLoading ? null : _submitForm,
-      child: _isLoading
-          ? const SizedBox(
-        width: 20,
-        height: 20,
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: _isLoading ? null : _submitForm,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Theme.of(context).primaryColor,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppTheme.defaultBorderRadius),
+          ),
         ),
-      )
-          : const Text('Add Product'),
-      style: ElevatedButton.styleFrom(
-        minimumSize: const Size(double.infinity, 50),
-        backgroundColor: AppTheme.primaryBlue,
+        child: _isLoading
+            ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+            : const Text(
+                'Add Product',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
       ),
     );
   }
 
   void _pickImage() {
-    // TODO: Implement camera functionality
-    setState(() {
-      _imageUrl = 'https://example.com/product-image.jpg';
-    });
+    // TODO: Implement image picking from camera
   }
 
   void _pickImageFromGallery() {
-    // TODO: Implement gallery picker functionality
-    setState(() {
-      _imageUrl = 'https://example.com/product-image.jpg';
-    });
+    // TODO: Implement image picking from gallery
   }
 
   void _submitForm() {
     if (_formKey.currentState?.validate() ?? false) {
       setState(() => _isLoading = true);
-      context.read<ProductCubit>().addProduct(
+      final product = Product(
         name: _nameController.text,
         category: _selectedCategory,
         price: double.parse(_priceController.text),
-        quantity: int.parse(_quantityController.text),
-        productCode: _codeController.text,
+        stockQuantity: int.parse(_quantityController.text),
+        barcode: _codeController.text,
         description: _descriptionController.text,
-        imageUrl: _imageUrl,
       );
+      context.read<ProductCubit>().addProduct(product);
     }
   }
 }

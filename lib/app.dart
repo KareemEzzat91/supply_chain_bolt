@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+
 import 'core/routing/app_router.dart';
 import 'core/theme/theme_provider.dart';
 
@@ -22,6 +23,7 @@ class SupplyChainApp extends StatelessWidget {
             builder: (context, themeProvider, _) {
               return MaterialApp(
                 title: 'Supply Chain Bolt',
+                debugShowCheckedModeBanner: false,
                 theme: AppTheme.lightTheme,
                 darkTheme: AppTheme.darkTheme,
                 themeMode:

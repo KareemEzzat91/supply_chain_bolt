@@ -76,8 +76,9 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const ProfileScreen());
 
       case Routes.notificationsScreen:
-        return MaterialPageRoute(builder: (_) => const NotificationsScreen());case Routes.settings:
-      return MaterialPageRoute(builder: (_) => const SettingsDashboard());
+        return MaterialPageRoute(builder: (_) => const NotificationsScreen());
+      case Routes.settings:
+        return MaterialPageRoute(builder: (_) => const SettingsDashboard());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
