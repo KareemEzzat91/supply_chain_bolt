@@ -5,28 +5,36 @@ import 'distributor_auth_state.dart';
 class DistributorAuthCubit extends Cubit<DistributorAuthState> {
   final AuthRepo authRepo;
 
-  DistributorAuthCubit(this.authRepo) : super(DistributorLoginInitial());
+  DistributorAuthCubit(this.authRepo) : super(DistributorAuthInitial());
 
 
   Future<void> distLogin(String email, String password) async {
-    emit(DistributorLoginLoading());
+
+    emit(DistributorAuthLoading());
     try {
-      // TODO: Implement actual login logic with API
-      authRepo.loginAsDistributor(email, password);
-      emit(DistributorLoginSuccess());
+      final response = await authRepo.loginAsDistributor(email, password);
+      response.when(
+        onSuccess: (data) => emit(DistributorAuthSuccess()),
+        onError: (error) => emit(DistributorAuthError("Check your email or password")),
+      );
     } catch (e) {
-      emit(DistributorLoginError(e.toString()));
+      emit(DistributorAuthError(e.toString()));
     }
   }
 
-  Future<void> distSignUp(String email, String password,String role ) async {
-    emit(DistributorLoginLoading());
+  Future<void> distSignUp(String name ,String email, String password,String role ) async {
+    emit(DistributorAuthLoading());
     try {
-      // TODO: Implement actual login logic with API
-      authRepo.registerAsDistributor(email, password,role);
-      emit(DistributorLoginSuccess());
+      final response = await authRepo.registerAsDistributor(name ,email, password,role );
+
+
+      response.when(
+        onSuccess: (data) => emit(DistributorAuthSuccess()),
+        onError: (error) => emit(DistributorAuthError("email already exists")),
+      );
+
     } catch (e) {
-      emit(DistributorLoginError(e.toString()));
+      emit(DistributorAuthError(e.toString()));
     }
   }
 

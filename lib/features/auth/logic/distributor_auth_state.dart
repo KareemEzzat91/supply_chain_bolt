@@ -1,12 +1,12 @@
 abstract class DistributorAuthState {}
 
-class DistributorLoginInitial extends DistributorAuthState {}
+class DistributorAuthInitial extends DistributorAuthState {}
 
-class DistributorLoginLoading extends DistributorAuthState {}
+class DistributorAuthLoading extends DistributorAuthState {}
 
-class DistributorLoginSuccess extends DistributorAuthState {}
+class DistributorAuthSuccess extends DistributorAuthState {}
 
-class DistributorLoginError extends DistributorAuthState {
+class DistributorAuthError extends DistributorAuthState {
   final String message;
-  DistributorLoginError(this.message);
+  DistributorAuthError(this.message);
 }
