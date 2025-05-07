@@ -146,7 +146,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
               ElevatedButton.icon(
                 onPressed: _isLoading ? null : _pickImageFromGallery,
                 icon: const Icon(Icons.photo_library),
-                label: const Text('Choose from Gallery'),
+                label: const Text('From Gallery'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey.shade100,
                   foregroundColor: Colors.black87,

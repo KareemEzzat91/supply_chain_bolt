@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supply_chain_bolt/core/utils/constants.dart';
-import 'package:supply_chain_bolt/features/notifications/presentation/screens/notifications_screen.dart';
-import 'package:supply_chain_bolt/features/profile/presentation/screens/profile_screen.dart';
 import 'package:supply_chain_bolt/features/distributors/data/models/distributor_model.dart';
 import 'package:supply_chain_bolt/features/distributors/presentation/cubit/distributor_cubit.dart';
 import 'package:supply_chain_bolt/features/distributors/presentation/screens/distributor_list_screen.dart';
-import 'package:supply_chain_bolt/features/distributors/presentation/screens/distributor_performance_screen.dart';
-import 'package:supply_chain_bolt/features/orders/presentation/screens/new_order_screen.dart';
 import 'package:supply_chain_bolt/features/distributors/presentation/screens/distributor_management_screen.dart';
-import 'package:supply_chain_bolt/features/reports/presentation/screens/reports_screen.dart';
+import 'package:supply_chain_bolt/features/distributors/presentation/screens/distributor_performance_screen.dart';
+import 'package:supply_chain_bolt/features/notifications/presentation/screens/notifications_screen.dart';
+import 'package:supply_chain_bolt/features/orders/presentation/screens/new_order_screen.dart';
 import 'package:supply_chain_bolt/features/products/presentation/screens/product_list_screen.dart';
+import 'package:supply_chain_bolt/features/profile/presentation/screens/profile_screen.dart';
+import 'package:supply_chain_bolt/features/reports/presentation/screens/reports_screen.dart';
 
 import '../../../distributors/presentation/cubit/distributor_state.dart';
 
@@ -45,7 +45,10 @@ class ManagerHomeScreen extends StatelessWidget {
                   ),
                 );
               },
-            ).animate().fadeIn(duration: 300.ms, delay: 100.ms).moveX(begin: 10, end: 0),
+            )
+                .animate()
+                .fadeIn(duration: 300.ms, delay: 100.ms)
+                .moveX(begin: 10, end: 0),
             IconButton(
               icon: const Icon(Icons.person, color: Colors.white),
               onPressed: () {
@@ -56,7 +59,10 @@ class ManagerHomeScreen extends StatelessWidget {
                   ),
                 );
               },
-            ).animate().fadeIn(duration: 300.ms, delay: 200.ms).moveX(begin: 10, end: 0),
+            )
+                .animate()
+                .fadeIn(duration: 300.ms, delay: 200.ms)
+                .moveX(begin: 10, end: 0),
           ],
         ),
         body: BlocBuilder<DistributorCubit, DistributorState>(
@@ -65,9 +71,8 @@ class ManagerHomeScreen extends StatelessWidget {
               return Center(
                 child: const CircularProgressIndicator(
                   color: AppTheme.primaryBlue,
-                ).animate()
-                    .fadeIn(duration: 400.ms)
-                    .scale(begin: const Offset(0.8, 0.8), end: const Offset(1, 1)),
+                ).animate().fadeIn(duration: 400.ms).scale(
+                    begin: const Offset(0.8, 0.8), end: const Offset(1, 1)),
               );
             }
             if (state is DistributorError) {
@@ -75,14 +80,15 @@ class ManagerHomeScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.error_outline, color: AppTheme.errorColor, size: 48)
+                    const Icon(Icons.error_outline,
+                            color: AppTheme.errorColor, size: 48)
                         .animate()
                         .fadeIn(duration: 400.ms)
                         .scale(),
                     const SizedBox(height: 16),
                     Text(
                       state.message,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: AppTheme.errorColor,
                         fontSize: AppTheme.subheadingFontSize,
                       ),
@@ -153,13 +159,14 @@ class ManagerHomeScreen extends StatelessWidget {
           ),
         ),
         SliverPadding(
-          padding: EdgeInsets.all(AppTheme.defaultPadding),
+          padding: const EdgeInsets.all(AppTheme.defaultPadding),
           sliver: SliverToBoxAdapter(
             child: _buildQuickActions(context),
           ),
         ),
         SliverPadding(
-          padding: EdgeInsets.symmetric(horizontal: AppTheme.defaultPadding),
+          padding:
+              const EdgeInsets.symmetric(horizontal: AppTheme.defaultPadding),
           sliver: SliverToBoxAdapter(
             child: _buildDistributorList(context, distributors),
           ),
@@ -180,7 +187,7 @@ class ManagerHomeScreen extends StatelessWidget {
     final averageRating = distributors.isEmpty
         ? 0.0
         : distributors.fold<double>(0, (sum, d) => sum + d.rating) /
-        distributors.length;
+            distributors.length;
 
     return GridView.count(
       shrinkWrap: true,
@@ -202,7 +209,9 @@ class ManagerHomeScreen extends StatelessWidget {
               builder: (context) => const DistributorListScreen(),
             ),
           ),
-        ).animate().fadeIn(duration: 600.ms, delay: 200.ms)
+        )
+            .animate()
+            .fadeIn(duration: 600.ms, delay: 200.ms)
             .slideY(begin: 0.2, end: 0, curve: Curves.easeOutQuad),
         _buildStatCard(
           'Total Revenue',
@@ -210,7 +219,9 @@ class ManagerHomeScreen extends StatelessWidget {
           Icons.attach_money,
           AppTheme.primaryBlue,
           Colors.white,
-        ).animate().fadeIn(duration: 600.ms, delay: 300.ms)
+        )
+            .animate()
+            .fadeIn(duration: 600.ms, delay: 300.ms)
             .slideY(begin: 0.2, end: 0, curve: Curves.easeOutQuad),
         _buildStatCard(
           // TODO: Add functionality for managing orders or navigate to order details
@@ -226,7 +237,9 @@ class ManagerHomeScreen extends StatelessWidget {
               builder: (context) => const ProductListScreen(),
             ),
           ),
-        ).animate().fadeIn(duration: 600.ms, delay: 400.ms)
+        )
+            .animate()
+            .fadeIn(duration: 600.ms, delay: 400.ms)
             .slideY(begin: 0.2, end: 0, curve: Curves.easeOutQuad),
         _buildStatCard(
           'Average Rating',
@@ -234,25 +247,22 @@ class ManagerHomeScreen extends StatelessWidget {
           Icons.star,
           AppTheme.warningColor,
           Colors.white,
-        ).animate().fadeIn(duration: 600.ms, delay: 500.ms)
+        )
+            .animate()
+            .fadeIn(duration: 600.ms, delay: 500.ms)
             .slideY(begin: 0.2, end: 0, curve: Curves.easeOutQuad),
       ],
     );
   }
 
   Widget _buildStatCard(
-      String title,
-      String value,
-      IconData icon,
-      Color color,
-      Color textColor,
-      {VoidCallback? onTap}
-      ) {
+      String title, String value, IconData icon, Color color, Color textColor,
+      {VoidCallback? onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color:  Colors.white,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -263,7 +273,7 @@ class ManagerHomeScreen extends StatelessWidget {
           ],
         ),
         child: Padding(
-          padding: EdgeInsets.all(AppTheme.defaultPadding),
+          padding: const EdgeInsets.all(AppTheme.defaultPadding),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -295,11 +305,11 @@ class ManagerHomeScreen extends StatelessWidget {
                             color: AppTheme.textColor,
                           ),
                         ),
-                        SizedBox(height: AppTheme.defaultPadding / 4),
+                        const SizedBox(height: AppTheme.defaultPadding / 4),
                         Text(
                           title,
-                          style: TextStyle(
-                            fontSize: AppTheme.captionFontSize,
+                          style: const TextStyle(
+                            fontSize: 11,
                             color: AppTheme.secondaryTextColor,
                           ),
                         ),
@@ -311,7 +321,8 @@ class ManagerHomeScreen extends StatelessWidget {
             ],
           ),
         ),
-      ).animate(onPlay: (controller) => controller.repeat(reverse: true))
+      )
+          .animate(onPlay: (controller) => controller.repeat(reverse: true))
           .shimmer(duration: 1000.ms, color: color.withOpacity(0.2))
           .then(delay: 1000.ms),
     );
@@ -334,7 +345,7 @@ class ManagerHomeScreen extends StatelessWidget {
         ),
         Container(
           decoration: BoxDecoration(
-             borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.05),
@@ -358,52 +369,60 @@ class ManagerHomeScreen extends StatelessWidget {
                   'Products',
                   Icons.inventory,
                   AppTheme.primaryBlue,
-                      () => Navigator.push(
+                  () => Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const ProductListScreen(),
                     ),
                   ),
-                ).animate().fadeIn(duration: 500.ms, delay: 400.ms)
+                )
+                    .animate()
+                    .fadeIn(duration: 500.ms, delay: 400.ms)
                     .slideY(begin: 0.2, end: 0),
                 _buildActionButton(
                   context,
                   'New Order',
                   Icons.shopping_cart,
                   AppTheme.successColor,
-                      () => Navigator.push(
+                  () => Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const NewOrderScreen(),
                     ),
                   ),
-                ).animate().fadeIn(duration: 500.ms, delay: 500.ms)
+                )
+                    .animate()
+                    .fadeIn(duration: 500.ms, delay: 500.ms)
                     .slideY(begin: 0.2, end: 0),
                 _buildActionButton(
                   context,
                   'Distributors',
                   Icons.people,
                   AppTheme.warningColor,
-                      () => Navigator.push(
+                  () => Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const DistributorManagementScreen(),
                     ),
                   ),
-                ).animate().fadeIn(duration: 500.ms, delay: 600.ms)
+                )
+                    .animate()
+                    .fadeIn(duration: 500.ms, delay: 600.ms)
                     .slideY(begin: 0.2, end: 0),
                 _buildActionButton(
                   context,
                   'Reports',
                   Icons.assessment,
                   AppTheme.secondaryBlue,
-                      () => Navigator.push(
+                  () => Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const ReportsScreen(),
                     ),
                   ),
-                ).animate().fadeIn(duration: 500.ms, delay: 700.ms)
+                )
+                    .animate()
+                    .fadeIn(duration: 500.ms, delay: 700.ms)
                     .slideY(begin: 0.2, end: 0),
               ],
             ),
@@ -414,12 +433,12 @@ class ManagerHomeScreen extends StatelessWidget {
   }
 
   Widget _buildActionButton(
-      BuildContext context,
-      String label,
-      IconData icon,
-      Color color,
-      VoidCallback onPressed,
-      ) {
+    BuildContext context,
+    String label,
+    IconData icon,
+    Color color,
+    VoidCallback onPressed,
+  ) {
     return InkWell(
       onTap: onPressed,
       borderRadius: BorderRadius.circular(16),
@@ -446,11 +465,12 @@ class ManagerHomeScreen extends StatelessWidget {
                 ],
               ),
               child: Icon(icon, size: 30, color: color),
-            ).animate(onPlay: (controller) => controller.forward(from: 0.0))
+            )
+                .animate(onPlay: (controller) => controller.forward(from: 0.0))
                 .scaleXY(begin: 1, end: 0.9, duration: 100.ms)
                 .then(duration: 100.ms)
                 .scaleXY(begin: 0.9, end: 1),
-            SizedBox(height: AppTheme.defaultPadding),
+            const SizedBox(height: AppTheme.defaultPadding),
             Text(
               label,
               textAlign: TextAlign.center,
@@ -502,7 +522,7 @@ class ManagerHomeScreen extends StatelessWidget {
         const SizedBox(height: 16),
         Container(
           decoration: BoxDecoration(
-             borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.05),
@@ -530,7 +550,8 @@ class ManagerHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDistributorTile(BuildContext context, DistributorModel distributor, int index) {
+  Widget _buildDistributorTile(
+      BuildContext context, DistributorModel distributor, int index) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(
         horizontal: AppTheme.defaultPadding,
@@ -544,7 +565,7 @@ class ManagerHomeScreen extends StatelessWidget {
           child: Text(
             distributor.fullName[0],
             style: const TextStyle(
-               fontSize: 18,
+              fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -552,15 +573,15 @@ class ManagerHomeScreen extends StatelessWidget {
       ),
       title: Text(
         distributor.fullName,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: AppTheme.defaultFontSize,
           fontWeight: AppTheme.boldWeight,
-         ),
+        ),
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: AppTheme.defaultPadding / 4),
+          const SizedBox(height: AppTheme.defaultPadding / 4),
           Row(
             children: [
               Container(
@@ -583,7 +604,6 @@ class ManagerHomeScreen extends StatelessWidget {
                 child: Text(
                   'Area: ${distributor.area}',
                   overflow: TextOverflow.ellipsis,
-
                   style: const TextStyle(
                     fontSize: AppTheme.captionFontSize,
                     color: AppTheme.secondaryTextColor,
@@ -634,7 +654,9 @@ class ManagerHomeScreen extends StatelessWidget {
           },
         ),
       ),
-    ).animate().fadeIn(duration: 400.ms, delay: 300.ms + (index * 100).ms)
+    )
+        .animate()
+        .fadeIn(duration: 400.ms, delay: 300.ms + (index * 100).ms)
         .slideX(begin: 0.1, end: 0);
   }
 
